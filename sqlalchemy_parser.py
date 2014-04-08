@@ -5,11 +5,11 @@ from datetime import datetime
 from healthcode import app
 import simplejson
 from flask.ext.sqlalchemy import SQLAlchemy
-from sqlalchemy.dialects import mysql
-from sqlalchemy import Column, Integer, String, ForeignKey, create_engine, types
-from sqlalchemy.orm import scoped_session, sessionmaker, relationship, backref
-from sqlalchemy.types import TypeDecorator, VARCHAR
-from sqlalchemy.ext.declarative import declarative_base
+from SQLAlchemy.dialects import mysql
+from SQLAlchemy import Column, Integer, String, ForeignKey, create_engine, types
+from SQLAlchemy.orm import scoped_session, sessionmaker, relationship, backref
+from SQLAlchemy.types import TypeDecorator, VARCHAR
+from SQLAlchemy.ext.declarative import declarative_base
 from logging import getLogger
 loggers = [app.logger, getLogger('SQLAlchemy')]
 
@@ -93,7 +93,7 @@ class Resources():
 
 		self.setup_connection()
 		
-		manager = flask.ext.restless.APIManager(app, flask_sqlalchemy_db=db)
+		self.manager = flask.ext.restless.APIManager(app, flask_sqlalchemy_db=db)
 
 		self.setup_tables()
 		self.process()
@@ -111,36 +111,22 @@ class Resources():
 		data = simplejson.load(open("drug_sideeffect_retResults.json", "r")) # Maybe use json.loads("drug_sideeffect_retResults.json") ?
 		# Not sure what the simplejson class is doing
 
-		manager.create_api(User, methods=['GET'],['POST'],['DELETE'])
-		manager.create_api(Drugs, methods=['GET'],['POST'],['DELETE'])
-		manager.create_api(SideEffects, methods=['GET'],['POST'],['DELETE'])
-		manager.create_api(SideEffectsDetails, methods=['GET'],['POST'],['DELETE'])
+		self.manager.create_api(Users, methods=['GET'],['POST'],['DELETE'])
+		self.manager.create_api(Drugs, methods=['GET'],['POST'],['DELETE'])
+		self.manager.create_api(SideEffects, methods=['GET'],['POST'],['DELETE'])
+		self.manager.create_api(SideEffectsDetails, methods=['GET'],['POST'],['DELETE'])
 
-
-		"""
-			data =  [{
-				"drugName":"some drug",
-				"sideEffect":"some side effect",
-				"retrievedObjects":
-					[{
-						"url":"http://www.some.url.om",
-						"forumId":"5",
-						"title":"some title1",
-						"content":"content 1"
-					}]
-			}]
-
-		"""
-
-	for i, dr in enumerate(data['drugName']):
-		drug = Drugs(dr)
-		self.session.add(drug)
+		for i, dr in enumerate(data['drugName']):
+			drug = Drugs(dr)
+			self.session.add(drug)
 
 			for se in data['sideEffect']:
 				side_effect = SideEffects(se)
 				self.session.add(side_effect)
 
 				for j, reO in data['retrievedObjects'][i]:
+
+					# This variable never gets used
 					side_effects_details = SideEffectsDetails(reO)
 
 					url = data['retrievedObjects'][j]['url']

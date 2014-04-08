@@ -119,8 +119,8 @@ class RealThing(restful.Resource):
 	def get(self):
 		variable = Users.query
 		print type(variable)
-		users = Users.query.first()
-		return str(users), 201
+		users = Users.query.all()
+		return [str(user) for user in users], 201
 	
 #	def post(self):
 #		# Parse the arguments from the post request

@@ -3,7 +3,8 @@ from flask import Flask
 from flask.ext import restful
 from flask.ext.restful import reqparse, marshal_with, marshal
 from flask.ext.restful.utils import cors
-from database import Users, Drugs, SideEffects, URI 
+#from database import Users, Drugs, SideEffects, URI 
+import database
 from flask.ext.sqlalchemy import SQLAlchemy
 
 """
@@ -22,7 +23,7 @@ https://devcenter.heroku.com/articles/getting-started-with-python
 """
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = URI
+app.config['SQLALCHEMY_DATABASE_URI'] = database.URI
 data = SQLAlchemy(app)
 
 api = restful.Api(app)
@@ -143,7 +144,7 @@ class Create_user_resource(restful.Resource):
 		password = args["password"]
 		# TODO: MAKE SURE THE PASSWORD HASHES TO THE CORRECT USER
 
-api.add_resource(Create_user_resource, 'users/create')
+api.add_resource(Create_user_resource, '/users/create')
 
 ################################################
 ################################################
